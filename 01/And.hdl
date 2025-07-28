@@ -7,9 +7,10 @@
  * if (a and b) out = 1, else out = 0 
  */
 CHIP And {
-    IN a, b, c, d;
+    IN a, b;
     OUT out;
     
     PARTS:
-    //// Replace this comment with your code.
+    Nand(a=a, b=b, out=nandab);
+    Not(in=nandab, out=out);
 }
