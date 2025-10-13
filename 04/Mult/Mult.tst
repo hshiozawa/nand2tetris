@@ -7,7 +7,7 @@
 // Tests the program by having it multiply several sets of
 // R0 and R1 values.
 
-load Mult.asm,
+// load Mult.asm,
 compare-to Mult.cmp,
 output-list RAM[0]%D2.6.2 RAM[1]%D2.6.2 RAM[2]%D2.6.2;
 
