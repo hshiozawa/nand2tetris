@@ -30,7 +30,6 @@ export class Code {
   }
 
   public jump(jumpVal: Jump): BinCode {
-    console.log('val ' + jumpVal);
     switch (jumpVal) {
       case 'null':
         return "000";
@@ -116,9 +115,8 @@ export class Code {
     }
   }
 
-  public at(atVal: string) {
-    const intVal = Number.parseInt(atVal);
-    const binVal = intVal.toString(2);
+  public address(addressVal: number) {
+    const binVal = addressVal.toString(2);
     return binVal.padStart(16, "0");
   }
 }

@@ -7,9 +7,9 @@ export type At = string;
 
 export class Parser {
   private readonly lines: string[];
-  private readonly endStep: number;
+  private readonly endLineNum: number;
 
-  private currentStep: number;
+  private currentLineNum: number;
   private currentLine: string;
 
   private symbolVal: Symbol = null;
@@ -18,21 +18,26 @@ export class Parser {
   private jumpVal: Jump = null;
   private atVal: At = null;
 
-  constructor(private readonly rawCode: string) {
-    this.lines = rawCode.replace(/\s+/, '').split("\n");
-    this.currentStep = 0;
-    this.endStep = this.lines.length - 1;
+  constructor(rawCode: string) {
+    this.lines = rawCode.split("\n").map(line => line.replace(/\s/g, "")).filter(line => line.length > 0);
+    this.currentLineNum = -1;
+    this.endLineNum = this.lines.length - 1;
   }
 
   public hasMoreLine(): boolean {
-    return this.currentStep <= this.endStep;
+    return this.currentLineNum + 1 <= this.endLineNum;
   }
 
   public advance(): void {
+    if (!this.hasMoreLine()) {
+      throw new Error(`No more lines available.`);
+    }
+
     do {
-      this.currentLine = this.lines[this.currentStep++];
-      console.log(`current: ${ this.currentLine } (line:${ this.currentStep - 1 }, end:${ this.endStep }))`);
-    } while (this.hasMoreLine() && this.currentLine.length === 0 || this.currentLine.startsWith('//'));
+      this.currentLineNum++;
+      this.currentLine = this.lines[this.currentLineNum];
+      console.log(`current: '${ this.currentLine }' (L${ this.currentLineNum - 1 }, E:${ this.endLineNum })`);
+    } while (this.currentLine.length === 0 || this.currentLine.startsWith("//"));
 
     switch (this.instructionType()) {
       case 'L_INSTRUCTION':
@@ -45,7 +50,7 @@ export class Parser {
         this.parseAt();
         break;
       default:
-        throw new Error('Unrecognized line: ${ this.currentLine }');
+        throw new Error(`Unrecognized line: ${ this.currentLine }`);
     }
   }
 
